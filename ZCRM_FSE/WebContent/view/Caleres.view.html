@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html>
+<head  >
+<meta charset='utf-8' />
+<link href='fullcal/lib/jquery-ui.min.css' rel='stylesheet' />
+<link href='fullcal/lib/fullcalendar.min.css' rel='stylesheet' />
+<link href='fullcal/lib/fullcalendar.print.css' rel='stylesheet' media='print' />
+<link href='fullcal/scheduler.min.css' rel='stylesheet' />
+<script src='fullcal/lib/fullcalendar.min.js'></script>
+<script src='fullcal/scheduler.min.js'></script>
+<meta charset="UTF-8">
+   <meta name="viewport" 
+                 content="width=device-width">
+  
+<script>
+	
+ 	var url1 = "'FSM01')";
+ 	var url2 = "http://gssusnj5.globalsoftsolutions.net:8002/sap/opu/odata/SAP/ZRPA_MGR_SRV/TeamListnCalSet(";
+ 	var url = url2+url1;
+ 	var arry=[];
+ 	var evt=[];
+ 	var url10;
+ 	
+   $.ajax({
+         type: "GET",
+         contentType: "application/json; charset=utf-8",
+         datatype: "json",
+         url: url,
+         async: false,
+    	    beforeSend: function (XMLHttpRequest2) {
+          
+             XMLHttpRequest2.setRequestHeader("Accept", "application/json");
+       									  } , 
+     success: function(oData, textStatus, jqXHR) {
+     	 arry = JSON.parse(oData.d.OutJsonString);
+          evt = JSON.parse(oData.d.OutJsonStringEvenr);
+     		},
+   		  });
+   		 var sel  = new Object();
+  var sel1 = new Object();
+ 	sel = deviceModel1;
+ 	if(sel.oData.Data != undefined){
+
+ 			}
+ 	  $(function (){
+ 		  
+ 		  	var d = new Date();	
+ 				var sapdate = ' ';
+ 				console.log(d.toDateString());
+ 			$('#calendar').fullCalendar({
+ 							
+ 				now: d.toDateString(),
+ 				
+ 				 theme:true,  
+ 				 start: '08:00', 
+ 			     end: '18:00', 
+ 			     aspectRatio: 1.8,
+ 			   slotWidth:'80',
+ 			scrollTime: '08:00',
+ 			header: {
+ 					left: 'today prev,next',
+ 					center: 'title',
+ 					right: 'timelineDay,timelineThreeDays'
+ 				},
+ 				defaultView: 'timelineThreeDays',
+ 				views: {
+ 					timelineThreeDays: {
+ 						type: 'timeline',
+ 						duration: { days: 3 }
+ 					}
+ 				},
+ 				selectable: true,
+ 				selectHelper: true,
+ 				
+ 				
+ 				select:function( start, end, jsEvent, view, resource ) {
+ 				
+ 					var title = 'Title';
+ 					
+ 					var eventData;
+ 						if (title) {                    
+ 						var no = bind.sPath;
+ 						if(!bind.sPath)
+ 							{
+ 							alert("Select the Unassigned Task first and then click on Calendar to assign to resource");
+ 							
+ 							}
+ 						var nov = no.charAt(14);
+ 					  var itemguid;
+ 					  var headerguid;
+ 					  var partner;
+ 					  var duration;
+ 					  partner = resource.id;
+ 					  headerguid = deviceModel1.oData.Data.results[nov].HeaderGuid;
+ 					  itemguid = deviceModel1.oData.Data.results[nov].ItemGuid;
+ 					  duration = deviceModel1.oData.Data.results[nov].Duration;
+ 					  sapdate = start.toString();
+ 					  console.log(itemguid);
+ 					
+ 				eventdata = { 
+ 						title : 'dummyevent'
+ 				};
+ 			var pfct = '00000052';
+ 	   	var urlParams;
+ 			urlParams = "IvGuid='"
+ 								+ itemguid
+ 								+ "',IvHeaderGuid='"
+ 								+ headerguid
+ 								+ "',IvPartnerNo='"
+ 								+ partner
+ 								+"',IvPfct='"
+ 								+pfct
+ 								+"',IvTime='"
+ 								+sapdate+
+ 								"',IvDuration='"
+ 								+duration+							
+ 								"')";
+ 					
+ 		
+ 			/* http://gssusnj5.globalsoftsolutions.net:8002/sap/opu/odata/SAP/ZRPA_MGR_SRV/partner_upd_ordSet(IvGuid='00221904C23E1EE598B9858B1258D7E8',IvHeaderGuid='0221904C23E1EE598B9858B1258D7E8',IvPartnerNo='110282',IvPfct='00000052') */
+ 		  url10 = "http://gssusnj5.globalsoftsolutions.net:8002/sap/opu/odata/sap/ZRPA_MGR_SRV/partner_upd_ordSet("
+ 				   +urlParams;
+ 		
+ 		 														
+ 		  $.ajax({
+ 		        type: "GET",
+ 		        contentType: "application/json; charset=utf-8",
+ 		        datatype: "json",
+ 		        url: url10,
+ 		        async: false,
+ 		   	    beforeSend: function (XMLHttpRequest2) {
+ 		            //Specifying this header ensures that the results will be returned as JSON.
+ 		            XMLHttpRequest2.setRequestHeader("Accept", "application/json");
+ 		      									  } , 
+ 		    success: function(oData, textStatus, jqXHR) {
+ 		  
+ 		    	alert('Data Updated to CRM,Refreshing page to retrieve real data');
+ 		    	 window.location.href = 'http://gssusnj5.globalsoftsolutions.net:8002/sap/bc/ui5_ui5/sap/ZCRM_FSM/index.html';
+ 		    	},
+ 		    error:	function(jqXHR, textStatus, errorThrown) {
+ 		    		  console.log(textStatus, errorThrown);
+ 		    		  alert(errorThrown);
+ 		    		}
+ 		  		  });
+ 		 $('#calendar').fullCalendar( 'refetchEvents' );
+ 					$('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
+ 					}
+ 					$('#calendar').fullCalendar('unselect');
+ 				},
+ 				
+ 				editable: true,
+ 				resourceAreaWidth: '30%',
+ 				resourceColumns: [
+ 					{
+ 						labelText: 'Resource Name',
+ 						field: 'title'
+ 					},
+ 					
+ 				],
+ 			
+ 				  			
+ 			 	 resources:  $.map(arry, function(item, i) {
+ 	               var resc = new Object();
+ 	               resc.id = item.id;
+ 	            
+ 	             resc.title = item.title;
+ 	              return resc;
+ 	          }), 
+ 				
+ 				events: $.map(evt, function(item, i) {
+ 	               var evt1 = new Object();
+ 	               evt1.id = item.id;
+ 	               evt1.resourceId = item.resourceId;
+ 	               evt1.start    = item.start; 
+ 	               evt1.end       = item.end;
+ 	               evt1.color = item.color;
+ 	               evt1.textColor = item.textColor; 
+ 	               evt1.title = item.title;
+ 	               return evt1; 
+ 	           })    
+ 	          
+ 			});
+ 		
+ 			$('#calendar').fullCalendar('option', 'height', 275); 
+ 	 });
+ 	
+</script>
+<style>
+
+html {overflow-y: scroll;}
+	body {
+		margin: 1;
+		padding: 1;
+		font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
+		font-size: 14px;
+		height:100px;
+		overflow:auto;
+	}
+
+	#calendar {
+		max-width: 1200px;
+	
+	       background-color: "red";
+	        table-layout: fixed;
+	       
+    float:left;
+    padding:10px;
+	}
+	#Legend{
+	    background-color:#eeeeee;
+	    float:left;
+    	}
+
+</style>
+<Style type='text/css'>
+
+#Blue{
+	background-color:blue;
+	color:white;
+	}
+#yellow{
+	background-color:yellow;
+	color:black;
+	}
+#green{
+	background-color:green;
+	color:white;
+	}
+	#red{
+	background-color:red;
+	color:white;
+	}
+	#orange{
+	background-color:orange;
+	color:black;
+	}
+	#purple{
+	background-color:purple;
+	color:white;
+	}
+	#map-canvas{
+        width: 800px;
+        height: 800px;
+        overflow-y:auto;
+      
+      }
+      #radio
+      {
+      background-color: turquoise;
+      
+      }
+</Style>
+
+</head>
+ 
+<body onLoad = "testload();" >
+  <br><BR><BR><br>
+  <form name="resource" action="getelig()" method="POST">
+
+
+ <div id ='radio'>
+ 
+ <input type="radio" id ='a' name="resource" onchange="handleChange1()" value="ALl" checked> All Resources
+<input type="radio" id = 'e' name="resource"  onchange="handleChange2()" value="Elg"> Eligible Resources Only
+</div>
+</form>
+ 
+	 <div id ='calendar' ></div>
+	 <div id ='Legend'  >
+<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='button' name='btnName'  value='Open Appointments' id='Blue' />&nbsp;&nbsp;&nbsp;
+ <input type='button' name='btnName'  value='InProcess Appointments' id='yellow' />&nbsp;&nbsp;&nbsp;
+ <input type='button' name='btnName'  value='Due Appointments' id='red' />&nbsp;&nbsp;&nbsp;
+ <input type='button' name='btnName'  value='Completed Appointments' id='green' />&nbsp;&nbsp;&nbsp;
+ <input type='button' name='btnName'  value='Engineer At Onsite' id='orange' />&nbsp;&nbsp;&nbsp;
+ <input type='button' name='btnName'  value='Require Reschedule' id='purple' />&nbsp;&nbsp;&nbsp;
+ <br><br>
+ </div>
+	 	<div id='map-canvas' style="overflow:auto; height:370px;width:750px;"></div>
+
+
+    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js"></script>
+    <script type="text/javascript">
+    
+    
+ var oModel = new sap.ui.model.json.JSONModel();
+    
+    var urlUser = "IvUsername eq 'FSM01'";
+ 	var urlLink = "http://gssusnj5.globalsoftsolutions.net:8002/sap/opu/odata/SAP/ZRPA_ASSIGNMENT_SRV/FetchAddressListSet?$filter=";
+ 	var urlMain = urlLink+urlUser;
+ 	
+
+    jQuery(function($) {
+        // Asynchronously Load the map API 
+        var script = document.createElement('script');
+        script.src = "http://maps.googleapis.com/maps/api/js?sensor=false&callback=initialize";
+        document.body.appendChild(script);
+    });
+
+    function initialize() {
+        var map;
+        var bounds = new google.maps.LatLngBounds();
+        var mapOptions = {
+            mapTypeId: 'roadmap'
+        };
+                        
+        // Display a map on the page
+        map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+        map.setTilt(45);
+            
+        
+          $.ajax({
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            datatype: "json",
+            url: urlMain,
+            async: false,
+       	    beforeSend: function (XMLHttpRequest2) {
+             
+                XMLHttpRequest2.setRequestHeader("Accept", "application/json");
+          									  } , 
+        success: function(oDatamap, textStatus, jqXHR) {
+        //	 arry = JSON.parse(oData.d.EvAddress);
+       // 	 alert(arry);
+        	 
+        	 
+        	 debugger;
+        	 oModel.setData(oDatamap);    
+             sap.ui.getCore().setModel(oModel);    
+                       //Create a model and bind the table rows to this model      
+                       var oModel1 = new sap.ui.model.json.JSONModel();    
+                     //Get the forecastday array table from txt_forecast object      
+                 var aData = oModel.getProperty("/d/results");    
+                     oModel1.setData({ modelData : aData });    
+                               //   oTable.setModel(oModel1); 
+                          //     alert(aData);
+        	 
+        		},
+      		  });  
+
+        // Multiple Markers
+        var markers = [];
+        var infoWindowContent = [];  
+                  
+                        for (var i = 0; i < oModel.oData.d.results.length; i++) {
+                      	var mark=[];
+                      	var info=[];
+
+                      	mark.push(oModel.oData.d.results[i].Address, oModel.oData.d.results[i].Color, eval(oModel.oData.d.results[i].Latitude), eval(oModel.oData.d.results[i].Longitude));
+                      	markers.push(mark);
+                      	
+                      	var div = '<div class="info_content">' + '<h3>' + eval(oModel.oData.d.results[i].ServiceOrderId) + '</h3>' + '</div>' ;
+                      	                      	                      	
+                      	info.push(div);
+                      	infoWindowContent.push(info);                      
+                       	
+                       } 
+ 
+            
+        // Display multiple markers on a map
+        var infoWindow = new google.maps.InfoWindow(), marker, i;
+        function pinSymbol(color) {
+            return {
+                path: 'M 0,0 C -2,-20 -10,-22 -10,-30 A 10,10 0 1,1 10,-30 C 10,-22 2,-20 0,0 z M -2,-30 a 2,2 0 1,1 4,0 2,2 0 1,1 -4,0',
+                fillColor: color,
+                fillOpacity: 1,
+                strokeColor: '#000',
+                strokeWeight: 2,
+                scale: 1,
+           };
+        }
+        // Loop through our array of markers & place each one on the map  
+        for( i = 0; i < markers.length; i++ ) {
+        	debugger;
+            var position = new google.maps.LatLng(markers[i][2], markers[i][3]);
+  
+            if (markers[i][1] == 'red'){
+            	
+            	marker = new google.maps.Marker({
+                    position: position,
+                    map: map,
+                    title: markers[i][0],
+                    icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'});            
+	
+            }
+            
+            else if(markers[i][1] == 'pink'){
+            	  marker = new google.maps.Marker({
+                      position: position,
+                      map: map,
+                      title: markers[i][0],
+                      icon: 'http://maps.google.com/mapfiles/ms/icons/pink-dot.png'
+  					        
+            });
+              }
+            
+            else if(markers[i][1] == 'green'){
+          	  marker = new google.maps.Marker({
+                    position: position,
+                    map: map,
+                    title: markers[i][0],
+                    icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'
+					        
+          });
+            }
+            
+            
+            else if(markers[i][1] == 'blue'){
+            	  marker = new google.maps.Marker({
+                      position: position,
+                      map: map,
+                      title: markers[i][0],
+                      icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+  					        
+            });
+              }
+            
+            else if(markers[i][1] == 'orange'){
+            	  marker = new google.maps.Marker({
+                      position: position,
+                      map: map,
+                      title: markers[i][0],
+                      icon: 'http://maps.google.com/mapfiles/ms/icons/orange-dot.png'
+  					        
+            });
+              }
+            
+            else if(markers[i][1] == 'yellow'){
+            	  marker = new google.maps.Marker({
+                      position: position,
+                      map: map,
+                      title: markers[i][0],
+                      icon: 'http://maps.google.com/mapfiles/ms/icons/yellow-dot.png'
+  					        
+            });
+              }
+            
+            else if(markers[i][1] == 'purple'){
+            	  marker = new google.maps.Marker({
+                      position: position,
+                      map: map,
+                      title: markers[i][0],
+                      icon: 'http://maps.google.com/mapfiles/ms/icons/pruple-dot.png'
+  					        
+            });
+              }
+            
+            else if(markers[i][1] == 'new'){
+          	  marker = new google.maps.Marker({
+                    position: position,
+                    map: map,
+                    title: markers[i][0],
+                    icon: 'http://maps.google.com/mapfiles/ms/icons/police.png'
+					        
+          });
+            }
+            
+            
+            
+            // Allow each marker to have an info window    
+            google.maps.event.addListener(marker, 'click', (function(marker, i) {
+                return function() {
+                    infoWindow.setContent(infoWindowContent[i][0]);
+                    infoWindow.open(map, marker);
+                }
+            })(marker, i));
+
+            // Automatically center the map fitting all markers on the screen
+            map.fitBounds(bounds);
+        }
+
+        // Override our map zoom level once our fitBounds function runs (Make sure it only runs once)
+        var boundsListener = google.maps.event.addListener((map), 'bounds_changed', function(event) {
+            this.setZoom(14);
+            google.maps.event.removeListener(boundsListener);
+        });
+        
+    }
+   
+    
+   
+</script>
+<script>
+ function handleChange2() {
+	 alert('hi');
+
+
+	 $('#calendar').fullCalendar('rerenderEvents');
+	
+	testload();
+	
+	 
+	
+	
+ };
+ function handleChange1()
+ {
+	
+ };
+function loadall(){
+	var url1 = "'FSM01')";
+ 	var url2 = "http://gssusnj5.globalsoftsolutions.net:8002/sap/opu/odata/SAP/ZRPA_MGR_SRV/TeamListnCalSet(";
+ 	var url = url2+url1;
+ 	var arry1=[];
+ 	var evt1=[];
+ 	var url10;
+ 	
+   $.ajax({
+         type: "GET",
+         contentType: "application/json; charset=utf-8",
+         datatype: "json",
+         url: url,
+         async: false,
+    	    beforeSend: function (XMLHttpRequest2) {
+          
+             XMLHttpRequest2.setRequestHeader("Accept", "application/json");
+       									  } , 
+     success: function(oData, textStatus, jqXHR) {
+     	 arry1 = JSON.parse(oData.d.OutJsonString);
+          evt1 = JSON.parse(oData.d.OutJsonStringEvenr);
+     		},
+   		  });
+   		 var sel  = new Object();
+  var sel1 = new Object();
+ 	sel = deviceModel1;
+ 	if(sel.oData.Data != undefined){
+
+ 			}
+ 	  $(function (){
+ 		   
+ 		  	var d = new Date();	
+ 				var sapdate = ' ';
+ 				console.log(d.toDateString());
+ 			$('#calendar').fullCalendar({
+ 							
+ 				now: d.toDateString(),
+ 				
+ 				 theme:true,  
+ 				 start: '08:00', 
+ 			     end: '18:00', 
+ 			     aspectRatio: 1.8,
+ 			   slotWidth:'80',
+ 			scrollTime: '08:00',
+ 			header: {
+ 					left: 'today prev,next',
+ 					center: 'title',
+ 					right: 'timelineDay,timelineThreeDays'
+ 				},
+ 				defaultView: 'timelineThreeDays',
+ 				views: {
+ 					timelineThreeDays: {
+ 						type: 'timeline',
+ 						duration: { days: 3 }
+ 					}
+ 				},
+ 				selectable: true,
+ 				selectHelper: true,
+ 				
+ 				
+ 				select:function( start, end, jsEvent, view, resource ) {
+ 				
+ 					var title = 'Title';
+ 					
+ 					var eventData;
+ 						if (title) {                    
+ 						var no = bind.sPath;
+ 						if(!bind.sPath)
+ 							{
+ 							alert("Select the Unassigned Task first and then click on Calendar to assign to resource");
+ 							
+ 							}
+ 						var nov = no.charAt(14);
+ 					  var itemguid;
+ 					  var headerguid;
+ 					  var partner;
+ 					  var duration;
+ 					  partner = resource.id;
+ 					  headerguid = deviceModel1.oData.Data.results[nov].HeaderGuid;
+ 					  itemguid = deviceModel1.oData.Data.results[nov].ItemGuid;
+ 					  duration = deviceModel1.oData.Data.results[nov].Duration;
+ 					  sapdate = start.toString();
+ 					  console.log(itemguid);
+ 					
+ 				eventdata = { 
+ 						title : 'dummyevent'
+ 				};
+ 			var pfct = '00000052';
+ 	   	var urlParams;
+ 			urlParams = "IvGuid='"
+ 								+ itemguid
+ 								+ "',IvHeaderGuid='"
+ 								+ headerguid
+ 								+ "',IvPartnerNo='"
+ 								+ partner
+ 								+"',IvPfct='"
+ 								+pfct
+ 								+"',IvTime='"
+ 								+sapdate+
+ 								"',IvDuration='"
+ 								+duration+							
+ 								"')";
+ 					
+ 		
+ 			/* http://gssusnj5.globalsoftsolutions.net:8002/sap/opu/odata/SAP/ZRPA_MGR_SRV/partner_upd_ordSet(IvGuid='00221904C23E1EE598B9858B1258D7E8',IvHeaderGuid='0221904C23E1EE598B9858B1258D7E8',IvPartnerNo='110282',IvPfct='00000052') */
+ 		  url10 = "http://gssusnj5.globalsoftsolutions.net:8002/sap/opu/odata/sap/ZRPA_MGR_SRV/partner_upd_ordSet("
+ 				   +urlParams;
+ 		
+ 		 														
+ 		  $.ajax({
+ 		        type: "GET",
+ 		        contentType: "application/json; charset=utf-8",
+ 		        datatype: "json",
+ 		        url: url10,
+ 		        async: false,
+ 		   	    beforeSend: function (XMLHttpRequest2) {
+ 		            //Specifying this header ensures that the results will be returned as JSON.
+ 		            XMLHttpRequest2.setRequestHeader("Accept", "application/json");
+ 		      									  } , 
+ 		    success: function(oData, textStatus, jqXHR) {
+ 		  
+ 		    	alert('Data Updated to CRM,Please Refresh to see the real Data,API need to add for auto refresh')
+ 		    	var rem = 'hi';
+ 		       $('#calendar').html();
+ 		    	},
+ 		  		  });
+ 		 $('#calendar').fullCalendar( 'refetchEvents' );
+ 					$('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
+ 					}
+ 					$('#calendar').fullCalendar('unselect');
+ 				},
+ 				
+ 				editable: true,
+ 				resourceAreaWidth: '30%',
+ 				resourceColumns: [
+ 					{
+ 						labelText: 'Resource Name',
+ 						field: 'title'
+ 					},
+ 					
+ 				],
+ 			
+ 				  			
+ 			 	 resources:  $.map(arry1, function(item, i) {
+ 	               var resc = new Object();
+ 	               resc.id = item.id;
+ 	            
+ 	             resc.title = item.title;
+ 	              return resc;
+ 	          }), 
+ 				
+ 				events:
+ 					$.map(evt1, function(item, i) {
+ 	               var evt1 = new Object();
+ 	               evt1.id = item.id;
+ 	               evt1.resourceId = item.resourceId;
+ 	               evt1.start    = item.start; 
+ 	               evt1.end       = item.end;
+ 	               evt1.color = item.color;
+ 	               evt1.textColor = item.textColor; 
+ 	               evt1.title = item.title;
+ 	               return evt1; 
+ 	           })    
+ 	          
+ 			});
+ 		
+ 			$('#calendar').fullCalendar('option', 'height', 400); 
+ 	 });
+	
+}
+ function testload(){
+		 window.location.href = 'http://gssusnj5.globalsoftsolutions.net:8002/sap/bc/ui5_ui5/sap/ZCRM_FSM/index.html';
+/* 	 var no = bind.sPath;
+	
+	 var nov = no.charAt(14);
+	  var itemguid;
+	  var headerguid;
+	  var partner;
+	  var duration;
+	  partner = resource.id;
+	  headerguid = deviceModel1.oData.Data.results[nov].HeaderGuid;
+	  itemguid = deviceModel1.oData.Data.results[nov].ItemGuid;
+	  duration = deviceModel1.oData.Data.results[nov].Duration;
+	 
+	 var urlParams11;
+		urlParams11 = "IvItemGuid='"
+							+ itemguid
+							+ "',IvUsername='"
+							+ "FSM01"+							
+							"')";
+ var reloadurl = "http://gssusnj5.globalsoftsolutions.net:8002/sap/opu/odata/sap/ZRPA_MGR_SRV/TeamListnCalelgbSet("+urlParams11; */
+	 
+	}
+ </script>
+</body>
+</html>

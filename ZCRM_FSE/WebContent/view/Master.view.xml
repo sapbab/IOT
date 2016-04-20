@@ -1,0 +1,43 @@
+
+<core:View xmlns:core="sap.ui.core" xmlns="sap.m"
+	xmlns:shellfooter="sap.ushell.ui.footerbar" controllerName="ZCRM_FSM.view.Master">
+	
+	<Page id="page" title="{i18n>MASTER_TITLE} ({/Data/results/length})">
+		<subHeader>
+			<Bar id="searchBar">
+				<contentMiddle>
+					<SearchField id="searchField" showRefreshButton="{device>/isNoTouch}"
+						placeholder="{i18n>MASTER_SEARCH_PLACEHOLDER}" search="handleSearch"
+						tooltip="{i18n>MASTER_SEARCH_TOOLTIP}" width="100%">
+					</SearchField>
+				</contentMiddle>
+			</Bar>
+		</subHeader>
+		
+		<content>
+			<List id="list" items="{/Data/results}" mode="{device>/listMode}"
+					select="handleSelect" growing="true" growingScrollToLoad="true">	
+				<items>
+					<ObjectListItem id="MAIN_LIST_ITEM" type="Active" 
+							title="{Description}" number="{OrderId}" press="handleSelect">
+					<attributes>	
+						<ObjectAttribute id="customerName" text="{Customer} " />	
+					</attributes>
+							<firstStatus> 
+								<ObjectStatus text="Exp.Dur:{Duration}min " />	
+							</firstStatus>
+
+						
+					</ObjectListItem>
+			</items>
+	</List>
+		</content>
+			<footer>
+			<Bar>
+				<contentLeft>
+					<shellfooter:SettingsButton></shellfooter:SettingsButton>
+				</contentLeft>
+			</Bar>
+		</footer>
+	</Page>
+	</core:View>

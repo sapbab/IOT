@@ -1,0 +1,92 @@
+<core:View xmlns:core="sap.ui.core" xmlns="sap.m" xmlns:form="sap.ui.layout.form"
+	xmlns:mvc="sap.ui.core.mvc" xmlns:l="sap.ui.layout" xmlns:layout="sap.ui.layout"
+	xmlns:u="sap.ui.unified" xmlns:vbm="sap.ui.vbm" xmlns:me="sap.me" xmlns:html="http://www.w3.org/1999/xhtml"
+	class="viewPadding" controllerName="ZCRM_FSM.view.Detail">
+	
+
+<html:html>
+<html:head >
+<html:meta charset='utf-8' />
+<html:link href='fullcal/lib/jquery-ui.min.css' rel='stylesheet' />
+<html:link href='fullcal/lib/fullcalendar.min.css' rel='stylesheet' />
+<html:link href='fullcal/lib/fullcalendar.print.css' rel='stylesheet' media='print' />
+<html:link href='fullcal/scheduler.min.css' rel='stylesheet' />
+
+
+<html:script src='fullcal/lib/fullcalendar.min.js'></html:script>
+<html:script src='fullcal/scheduler.min.js'></html:script>
+
+<html:style>
+
+	body {
+		margin: 1;
+		padding: 1;
+		font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
+		font-size: 14px;
+	}
+
+	#calendar {
+		max-width: 1200px;
+			margin: 50px auto;
+	       background-color: "red";
+	        table-layout: fixed;
+	}
+
+</html:style>
+<html:Style type='text/css'>
+
+#Blue{
+	background-color:blue;
+	color:white;
+	}
+#yellow{
+	background-color:yellow;
+	color:black;
+	}
+#green{
+	background-color:green;
+	color:white;
+	}
+	#red{
+	background-color:red;
+	color:white;
+	}
+	#orange{
+	background-color:orange;
+	color:black;
+	}
+	#purple{
+	background-color:purple;
+	color:white;
+	}
+	 #map {
+        width: 500px;
+        height: 200px;
+      }
+</html:Style>
+
+</html:head>
+<html:body >
+ <html:div id ='Legend' align = 'center' >
+ <html:br> </html:br>
+ <html:input type='button' name='btnName'  value='Open Appointments' id='Blue' />
+<html:br></html:br>
+ <html:input type='button' name='btnName'  value='InProcess Appointments' id='yellow' />
+<html:br></html:br>
+ <html:input type='button' name='btnName'  value='Due Appointments' id='red' />
+<html:br></html:br>
+ <html:input type='button' name='btnName'  value='Completed Appointments' id='green' />
+<html:br></html:br>
+ <html:input type='button' name='btnName'  value='Engineer At Onsite' id='orange' />
+ <html:br></html:br>
+  <html:input type='button' name='btnName'  value='Require Reschedule' id='purple' />
+  </html:div>
+
+	<html:div id='calendar' ></html:div> 
+	
+
+</html:body>
+</html:html>
+
+	
+</core:View>
